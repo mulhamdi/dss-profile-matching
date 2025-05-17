@@ -28,23 +28,24 @@ export const AppProvider = ({ children }) => {
   }, [alternatives]);
 
   const addCriterion = () => {
-    setCriteria((prev) => [
-      ...prev,
-      {
-        name: '',
-        factorType: 'core',
-        standardValue: 1,
-        scoreType: 'number', // 'number' or 'options'
-        min: 1,
-        max: 10,
-        options: [
-          { name: 'Pilihan 1', value: 1 },
-          { name: 'Pilihan 2', value: 5 },
-          { name: 'Pilihan 3', value: 9 },
-        ],
-        subCriteria: [], // for compatibility, can be removed later
-      },
-    ]);
+    if (criteria.length >= 8) return;
+    const newCriterion = {
+      name: '',
+      factorType: 'core',
+      standardValue: 5,
+      scoreType: 'number',
+      min: 1,
+      max: 10,
+      options: [{ name: '', value: 1 }]
+    };
+    setCriteria([...criteria, newCriterion]);
+    // Scroll to the new criterion after it's added
+    setTimeout(() => {
+      const lastCriterion = document.querySelector('.bg-dark-lighter:last-child');
+      if (lastCriterion) {
+        lastCriterion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   };
 
   const updateCriterion = (index, field, value) => {
@@ -110,14 +111,19 @@ export const AppProvider = ({ children }) => {
   };
 
   const addAlternative = () => {
-    if (alternatives.length >= 16) {
-      alert('Maksimal 16 kandidat!');
-      return;
-    }
-    setAlternatives([...alternatives, {
+    if (alternatives.length >= 16) return;
+    const newAlternative = {
       name: '',
-      scores: criteria.map(() => ({ selectedSubCriterion: null }))
-    }]);
+      scores: criteria.map(() => ({ value: '' }))
+    };
+    setAlternatives([...alternatives, newAlternative]);
+    // Scroll to the new alternative after it's added
+    setTimeout(() => {
+      const lastAlternative = document.querySelector('.bg-dark-lighter:last-child');
+      if (lastAlternative) {
+        lastAlternative.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   };
 
   const updateAlternative = (index, field, value) => {
